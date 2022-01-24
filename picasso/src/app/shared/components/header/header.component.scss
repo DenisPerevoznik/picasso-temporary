@@ -1,0 +1,30 @@
+@import "src/variables";
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+
+.brand{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: aliceblue;
+  height: 100%;
+  width: fit-content;
+  margin-right: 2rem;
+
+  h3{
+    //font-family: 'Alfa Slab One', cursive;
+    font-family: 'Russo One', sans-serif;
+  }
+
+  span{
+    font-size: 25px;
+  }
+
+  .sub{
+    //font-family: 'Orbitron', sans-serif;
+    color: #2fd7ff;
+  }
+}

@@ -1,0 +1,79 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "./variables.scss";
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css");
+
+//new main font
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import '~font-awesome/scss/font-awesome.scss';
+
+
+*{
+  font-family: 'Nunito', sans-serif !important;
+}
+
+body{
+  background-color: $background-app;
+  //font-family: 'Nunito', sans-serif;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;               /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;        /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ffffff54;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  //border: 3px solid transparent;  /* creates padding around scroll thumb */
+}
+
+.modal-content {
+  background: none;
+  border: none;
+}
+
+.modal-main{
+  background: $second-color;
+  color: white;
+  border-radius: 10px;
+}
+
+.custom-card{
+  background-color: $second-color;
+  padding: 10px;
+  border-radius: 10px;
+  color: aliceblue;
+}
+
+.form-control{
+  background-color: $inputs-color;
+  border: none;
+  color: aliceblue;
+
+  &:focus{
+    background-color: #2a4b6d;
+    border: none;
+    color: aliceblue;
+    box-shadow: 0 0 0 0.2rem #ffffff8c;
+  }
+
+  &::placeholder{
+    color: rgba(240, 248, 255, 0.5);
+  }
+
+  &:disabled{
+    background-color: #5b6670;
+    opacity: 0.5;
+  }
+}
+
+.invalid{
+  color: #ff6363;
+}

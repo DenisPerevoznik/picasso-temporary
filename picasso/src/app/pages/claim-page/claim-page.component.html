@@ -1,0 +1,144 @@
+
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-sm-12 col-md-3">
+      <input type="checkbox" class="mr-2" [(ngModel)]="notShowOld" [disabled]="loader">
+      <label style="color: aliceblue">Не показывать прошедшие</label>
+    </div>
+<!--    <div class="col-sm-12 col-md-9">-->
+<!--      <button class="btn btn-sm btn-light" (click)="openCreateClaimModal(addClaimModal)" [disabled]="loader">-->
+<!--        <i class="bi bi-plus-circle mr-2"></i> Добавить claim событие-->
+<!--      </button>-->
+<!--    </div>-->
+    <div class="col-md-12">
+      <div class="table-container mt-3">
+
+        <table class="table table-loader" *ngIf="loader">
+          <thead>
+          <th>Дата</th>
+          <th>Источник</th>
+          <th>Токен</th>
+          <th>Сеть</th>
+          <th>Тип</th>
+          <th>Процент</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of [1,2,3,4,5,6,7,8,9,10]">
+              <td><div class="load-line"></div></td>
+              <td><div class="load-line"></div></td>
+              <td><div class="load-line"></div></td>
+              <td><div class="load-circle"></div></td>
+              <td><div class="load-line"></div></td>
+              <td><div class="load-line"></div></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table" *ngIf="!loader">
+          <thead>
+            <th>Дата</th>
+            <th>Источник</th>
+            <th>Токен</th>
+            <th>Сеть</th>
+            <th>Тип</th>
+            <th>Процент</th>
+            <th></th>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of notShowOld | filterOlds:claimData">
+            <td>{{item.date | date:'dd.MM.yyyy'}}</td>
+            <td>{{item.source}}</td>
+            <td>{{item.token}}</td>
+            <td>
+              <img [src]="item.chain | networkInfo:'logo'" *ngIf="!item.chainImg && (item.chain | networkInfo:'logo')"
+                   alt="chain_img" class="chain-img">
+              <img [src]="item.chainImg" alt="chain_img" class="chain-img" *ngIf="item.chainImg">
+              <span *ngIf="!item.chainImg && !(item.chain | networkInfo:'logo')">{{item.chain | uppercase}}</span>
+            </td>
+            <td>{{item.type ? (item.type | titlecase) : '-'}}</td>
+            <td>{{item.percentage}}</td>
+            <td>
+              <i class="bi bi-pencil edit-control edit-date-map mr-3" *ngIf="item.id" title="Редактировать"
+                (click)="editClaim(item, addClaimModal)"></i>
+<!--              <i class="bi bi-trash remove-date-map" *ngIf="item.id" title="Удалить"></i>-->
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #addClaimModal let-modal>
+  <div class="modal-main">
+    <form [formGroup]="addClaimForm" (ngSubmit)="createClaimSubmit()">
+      <div class="modal-header">
+        <h5 class="modal-title" *ngIf="!isEdit">Новое claim событие</h5>
+        <h5 class="modal-title" *ngIf="isEdit">Редактирование claim</h5>
+      </div>
+      <div class="modal-body">
+
+        <label>Токен <i class="bi bi-asterisk required"></i></label>
+        <input type="text" class="form-control mb-3" formControlName="token" placeholder="Token name"/>
+
+        <label>Площадка <i class="bi bi-asterisk required"></i></label>
+        <input type="text" class="form-control mb-3" formControlName="source" placeholder="Source"/>
+
+        <label>Сеть <i class="bi bi-asterisk required"></i></label>
+        <select formControlName="chain" class="form-control mb-3">
+          <option [ngValue]="null">Выберите сеть</option>
+          <option [ngValue]="Networks.Binance">Binance</option>
+          <option [ngValue]="Networks.Polygon">Polygon</option>
+          <option [ngValue]="Networks.Ethereum">Ethereum</option>
+          <option [ngValue]="Networks.Solana">Solana</option>
+        </select>
+
+        <label>Тип</label>
+        <input type="text" class="form-control mb-3" formControlName="type" placeholder="Type"/>
+
+        <label>Процент <i class="bi bi-asterisk required"></i></label>
+        <input type="number" step=".001" class="form-control mb-3" formControlName="percentage" placeholder="Percentage"/>
+
+        <div formArrayName="dateMap" class="date-map-block">
+          <h6 class="header">Карта сбора</h6>
+          <div class="form-group" *ngFor="let dateMapItem of dateMapControls; let i = index">
+            <div class="row mb-3">
+              <div class="col-11">
+                <input type="datetime-local" class="form-control" formControlName="{{i}}">
+              </div>
+              <div class="col-1 d-flex align-items-center" style="padding: 0">
+                <div class="spinner-border spinner-border-sm text-danger" role="status" *ngIf="claimItemRemoveIndex === i">
+                  <span class="visually-hidden"></span>
+                </div>
+                <i class="bi bi-trash remove-date-map" *ngIf="dateMapControls.length > 1 && claimItemRemoveIndex != i"
+                   [ngStyle]="{color: claimItemRemoveIndex !== -1 ? 'gray' : '#ff0026'}" (click)="removeClaimItem(i)"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="add-date-map-item" (click)="newEventDateField()">
+            <i class="bi bi-plus-circle"></i> Добавить
+          </div>
+        </div>
+        <span *ngIf="submitted && addClaimForm.invalid" class="error mt-3">Нужно заполнить обязательные поля</span>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-sm btn-light" [disabled]="loader || claimItemRemoveIndex !== -1">
+          <ng-container *ngIf="!loader">
+            <i class="bi bi-clipboard-check mr-2"></i> {{isEdit ? 'Сохранить' : 'Создать'}}
+          </ng-container>
+          <div class="spinner-border spinner-border-sm" role="status" *ngIf="loader">
+            <span class="visually-hidden"></span>
+          </div>
+        </button>
+        <button type="button" class="btn btn-sm btn-danger" (click)="removeClaimGroup()"
+                [disabled]="loader" *ngIf="isEdit">Удалить все</button>
+        <button type="button" class="btn btn-sm btn-dark" (click)="modal.close('Close click')"
+                [disabled]="loader || claimItemRemoveIndex !== -1">Отмена</button>
+      </div>
+    </form>
+  </div>
+
+</ng-template>

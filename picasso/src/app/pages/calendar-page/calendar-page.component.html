@@ -1,0 +1,118 @@
+
+<div class="container" *ngIf="!selectedDay; else dayDetails">
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="d-flex flex-column justify-content-center align-items-center">
+        <div class="img-panel" *ngIf="!isMobile; else mobileCalendar">
+          <div class="loader-container" *ngIf="loader">
+            <app-loader></app-loader>
+          </div>
+          <div class="calendar-panel">
+            <ng-container [ngTemplateOutlet]="calendarButtons"></ng-container>
+            <table class="mt-3 calendar-table">
+              <thead>
+              <th *ngFor="let d of namesOfDays">{{d}}</th>
+              </thead>
+              <tbody>
+              <tr *ngFor="let w of weeks">
+                <td *ngFor="let day of w" [ngClass]="{'inactive-cell': day.isNotCurrentMonth}"
+                    (click)="selectedDay = day" (mouseenter)="cellEnter($event)" (mouseleave)="cellLeave($event)">
+                  <div class="add-event-btn" id="addEventBtn" (click)="addEventClick($event, day, addEventModal)">
+                    <i class="bi bi-plus-circle mr-2"></i> Создать
+                  </div>
+                  <div class="date" [ngClass]="{'date-current': day.today,
+              'date-not-curr-month': day.isNotCurrentMonth, 'date-weekend': day.isWeekend}">
+                    <span>{{day.mDate.toString() | date:'d'}}</span>
+                  </div>
+                  <ng-container *ngTemplateOutlet="eventSticker; context: {$implicit: day}"></ng-container>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <ng-template #mobileCalendar>
+          <ng-container [ngTemplateOutlet]="calendarButtons"></ng-container>
+          <table class="calendar-table">
+            <tbody>
+            <tr *ngFor="let day of mobileDates">
+              <td [ngClass]="{'inactive-cell': day.isNotCurrentMonth}"
+                  (click)="selectedDay = day">
+                <div class="date" [ngClass]="{'date-current': day.today,
+              'date-not-curr-month': day.isNotCurrentMonth, 'date-weekend': day.isWeekend}">
+                  <span>{{day.mDate.toString() | date:'d'}}</span>
+                </div>
+                <span class="date-name">{{day.dayName}}</span>
+                <ng-container *ngTemplateOutlet="eventSticker; context: {$implicit: day}"></ng-container>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #eventSticker let-day>
+  <div class="event-container">
+    <ng-container *ngIf="(day | poolStickers).length">
+      <div class="event-container__item" *ngFor="let sticker of day | poolStickers"
+           [ngStyle]="{'background-image': 'url(' + sticker + ')'}">
+      </div>
+    </ng-container>
+
+    <div class="event-container__item" *ngFor="let sticker of day | poolStickers:true"
+         [ngStyle]="{'background-image': 'url(' + sticker + ')'}">
+      <i class="bi bi-person-circle mark"></i>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #calendarButtons>
+  <button class="btn btn-sm btn-light mb-2" (click)="showCurrentMonth()" *ngIf="!isCurrentMonth">
+    <i class="bi bi-calendar-check mr-2"></i> Показать текущий месяц
+  </button>
+  <div class="calendar-controls d-flex justify-content-between align-items-center">
+    <button class="btn" [ngClass]="{'btn-outline-light': !isMobile, 'btn-light': isMobile}"
+            (click)="previousMonthClick()">
+      <i class="bi bi-caret-left-fill" [ngClass]="{'mr-2': !isMobile}"></i>
+      <span *ngIf="!isMobile">{{previousMonth | titlecase}}</span>
+    </button>
+    <h4 style="text-align: center">{{selectedMonthAndYear | titlecase}}</h4>
+    <button class="btn" [ngClass]="{'btn-outline-light': !isMobile, 'btn-light': isMobile}"
+            (click)="nextMonthClick()">
+      <span *ngIf="!isMobile">{{nextMonth | titlecase}}</span>
+      <i class="bi bi-caret-right-fill" [ngClass]="{'ml-2': !isMobile}"></i>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #addEventModal let-modal>
+  <app-add-event-popup [selectedDay]="addEventSelectedDay" [modal]="modal"
+                       [editId]="selectedEditId"></app-add-event-popup>
+</ng-template>
+
+<ng-template #dayDetails>
+  <div class="container mt-1">
+    <div class="row">
+      <div class="col-12 mb-4">
+        <div class="selected-date">
+          <button class="btn btn-light mr-4" (click)="exitDetails()">
+            <i class="bi bi-calendar mr-2"></i> Назад к календарю</button>
+          <h5>{{selectedDay.dateString}} (начало)</h5>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-4" *ngFor="let pool of selectedDay | getPools">
+        <app-event-item [pool]="pool"></app-event-item>
+      </div>
+      <div class="col-sm-12 col-md-4" *ngFor="let event of selectedDay.events">
+        <app-event-item [event]="event" (editEventClick)="editEvent($event, addEventModal)"
+          (eventRemoved)="eventRemoved($event)"></app-event-item>
+      </div>
+    </div>
+  </div>
+</ng-template>

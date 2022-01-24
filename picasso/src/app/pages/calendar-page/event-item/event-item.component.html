@@ -1,0 +1,129 @@
+
+<div class="common-container">
+  <div class="event-controls" *ngIf="!pool">
+    <i class="bi bi-pencil edit-control" title="Редактировать" (click)="editEvent()"></i>
+    <i class="bi bi-file-earmark-x remove-control" title="Удалить" (click)="removeEventClick(removeEventModal)"></i>
+  </div>
+  <div class="event-card">
+    <ng-container *ngIf="pool; else customEvent">
+      <div class="event-card__head">
+        <!--      <img [src]="pool.tokenImage" alt="token_img" width="40">-->
+        <div class="token-logo" [ngStyle]="{'background-image': 'url('+ pool.tokenImage +')'}"></div>
+        <h5 class="ml-2 modal-title" [title]="pool.title">{{pool.title}}</h5>
+      </div>
+      <div class="event-card__body">
+        <div class="banner" [ngStyle]="{'background-image': 'url('+ pool.banner +')'}">
+
+        </div>
+        <ul class="details-list">
+          <li>
+            <span class="details-list__title">Площадка</span>
+            <div class="details-list__source-img" [ngStyle]="{'background-image': 'url('+ pool.platformImage +')'}"></div>
+          </li>
+          <li>
+            <span class="details-list__title">Тип</span>
+            <span class="details-list__value">{{pool.type | titlecase}}</span>
+          </li>
+          <li *ngIf="!!pool.network">
+            <span class="details-list__title">Поддерживает</span>
+            <span class="details-list__value">{{pool.network | uppercase}}</span>
+          </li>
+          <li *ngFor="let field of pool.fields">
+            <span class="details-list__title">{{field | keyValue}}</span>
+            <span class="details-list__value">{{field[field | keyValue]}}</span>
+          </li>
+          <!--        <li *ngIf="!!pool.totalSoldCoin">-->
+          <!--          <span class="details-list__title">Сумма обмена:</span>-->
+          <!--          <span class="details-list__value">{{pool.totalSoldCoin}} {{pool.symbol}}</span>-->
+          <!--        </li>-->
+          <!--        <li *ngIf="!!pool.totalRaise">-->
+          <!--          <span class="details-list__title">Общий объем:</span>-->
+          <!--          <span class="details-list__value">{{pool.totalRaise}}</span>-->
+          <!--        </li>-->
+          <!--        <li *ngIf="pool.tokenRate; else withoutTokenRate">-->
+          <!--          <span class="details-list__title">1 {{pool.symbol}}</span>-->
+          <!--          <span class="details-list__value">{{pool.tokenRate}} BUSD</span>-->
+          <!--        </li>-->
+          <!--        <ng-template #withoutTokenRate>-->
+          <!--          <li>-->
+          <!--            <span class="details-list__title">Rate</span>-->
+          <!--            <span class="details-list__value">TBA</span>-->
+          <!--          </li>-->
+          <!--        </ng-template>-->
+        </ul>
+        <div class="end-time">
+          <h6>{{pool.infoTitle}}</h6>
+          <span>{{pool.displayTime ? (pool.displayTime | date:'dd.MM.yyyy HH:mm:ss') : 'TBA'}}</span>
+        </div>
+      </div>
+      <div class="event-card__footer">
+        <a [href]="pool.url" target="_blank" class="btn btn-sm btn-light">
+          <i class="bi bi-link-45deg mr-2"></i>Страница пула
+        </a>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+
+<ng-template #customEvent>
+  <div class="event-card__head mb-2">
+    <img [src]="event.icon" alt="token_img" width="35">
+    <h5 class="ml-2 modal-title" [title]="event.title">{{event.title}}</h5>
+  </div>
+  <div class="event-card__body">
+    <div class="event-banner" [ngStyle]="{'background-image': 'url('+ (event.banner && event.banner !== '#' ? event.banner : 'assets/images/custom-event-banner.jpeg') +')'}"></div>
+    <ul class="details-list">
+      <li>
+        <span class="details-list__title">Создано</span>
+        <span>Picasso <i class="bi bi-person ml-2"></i></span>
+      </li>
+      <li *ngIf="event.icon !== platformIcons.Picasso">
+        <span class="details-list__title">Площадка</span>
+        <div class="details-list__source-img" [ngStyle]="{'background-image': 'url('+ event.icon +')'}"></div>
+      </li>
+      <li *ngIf="event.tokenName">
+        <span class="details-list__title">Токен</span>
+        <span class="details-list__value">{{event.tokenName}}</span>
+      </li>
+      <li *ngFor="let dataItem of event.metadata">
+        <span class="details-list__title">{{dataItem.title}}</span>
+        <span class="details-list__value">{{dataItem.value}}</span>
+      </li>
+    </ul>
+<!--    <div class="end-time">-->
+<!--      <h6>Описание</h6>-->
+<!--      <span>{{event.description}}</span>-->
+<!--    </div>-->
+<!--    <div class="end-time">-->
+<!--      <h6>Конец подачи заявки</h6>-->
+<!--      <span>{{pool.finishTime | date:'dd.MM.yyyy HH:mm:ss'}}</span>-->
+<!--    </div>-->
+  </div>
+  <div class="event-card__footer">
+    <a [href]="event.link" target="_blank" class="btn btn-sm btn-light" *ngIf="event.link && event.link !== '#'">
+      <i class="bi bi-link-45deg mr-2"></i>Перейти по ссылке
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #removeEventModal let-modal>
+  <div class="modal-main">
+    <div class="modal-header">
+      <h5>Подтвердите удаление</h5>
+    </div>
+    <div class="modal-body">
+      <span class="remove-description">Вы уверены что хотите удалить событие "{{event.title}}" ?</span>
+    </div>
+    <span class="remove-text">{{removeError}}</span>
+    <div class="modal-footer">
+      <div class="spinner-border spinner-border-sm text-danger" role="status" *ngIf="loader">
+        <span class="visually-hidden"></span>
+      </div>
+      <button type="button" class="btn btn-sm btn-danger" (click)="removeEventSubmit()" *ngIf="!loader">
+        Удалить
+      </button>
+      <button type="button" class="btn btn-sm btn-dark" (click)="modal.close('Close click')" [disabled]="loader">Отмена</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,29 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mt-5">
+      <div class="login-form-container">
+
+        <div class="header">
+          <i class="bi bi-lock"></i>
+        </div>
+        <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()">
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" class="form-control mb-3" placeholder="Email">
+
+          <label for="password">Пароль</label>
+          <input type="password" id="password" formControlName="password" class="form-control" placeholder="Password">
+
+          <span class="mt-2 error" *ngIf="errorMsg">{{errorMsg}}</span>
+
+          <div class="footer mt-3">
+            <div class="spinner-border spinner-border-sm" role="status" *ngIf="loader">
+              <span class="visually-hidden"></span>
+            </div>
+            <button *ngIf="!loader" type="submit" class="btn btn-sm btn-dark"><i class="bi bi-key mr-2"></i> Открыть</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

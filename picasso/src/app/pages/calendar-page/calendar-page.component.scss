@@ -1,0 +1,250 @@
+@import "src/variables";
+
+//$calendar-main-color: #b5e1ef;
+$calendar-main-color: rgba(255, 255, 255, 0.55);
+
+.loader-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #2a5d6d82;
+}
+
+.calendar-table{
+  border-collapse: collapse;
+  @media(max-width: 768px) {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  thead{
+    font-size: 17px;
+    font-weight: bold;
+    text-align: center;
+    //background: #5e6f85;
+    //border: 1px solid #5e6f85;
+    color: aliceblue;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tbody{
+    color: aliceblue;
+    text-align: right;
+  }
+
+  .inactive-cell{
+    background: #0000006b;
+    color: gray;
+  }
+
+  .event-cell{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  td{
+    position: relative;
+    padding: 25px 10px 10px 1px;
+    width: 140px;
+    height: 140px;
+    border: 1px solid $calendar-main-color;
+    background: #fdfdfd40;
+    transition: 0.5s ease;
+    text-align: start;
+
+    @media(max-width: 770px) {
+      padding: 40px 10px 10px 1px;
+    }
+
+    &:hover{
+      background: #ffffff1a;
+      cursor: pointer;
+    }
+
+    //@media(max-width: 768px) {
+    //  width: 50px;
+    //  height: 50px;
+    //}
+
+    .date{
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #ffffff;
+      width: 31px;
+      height: 1px;
+      padding: 9px 11px;
+      //border-bottom: 1px solid white;
+      font-size: 12px;
+      box-shadow: -3px 4px 5px -4px black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom-left-radius: 9px;
+      color: black;
+
+      @media(max-width: 990px) and (min-width: 768px) {
+        box-shadow: 0px 2px 10px -1px black;
+        width: 100%;
+        border-radius: 0;
+      }
+    }
+
+    .date-name{
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+
+    .date-current{
+      background: #5096ff !important;
+      color: white;
+      font-weight: bold;
+    }
+
+    .date-weekend{
+      background: #ff7a7a;
+      color: white;
+    }
+
+    .date-not-curr-month{
+      background: #747474;
+      color: white !important;
+    }
+  }
+}
+
+.calendar-controls{
+  width: 100%;
+  color: white;
+}
+
+.calendar-panel{
+  padding: 15px;
+  width: 100%;
+  height: 100%;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(9px);
+  background-color: #00000070;
+  //border-radius: 27px;
+  box-shadow: -2px 1px 4px 0px rgba(0, 0, 0, 0.59);
+}
+
+.img-panel{
+  //border-radius: 27px;
+  position: relative;
+  background: url('https://wallpaperaccess.com/full/3648367.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+
+.filter-column{
+  background: #343a3f;
+  padding: 10px;
+  border: 1px dashed white;
+  box-shadow: -2px 1px 4px 0px rgba(0, 0, 0, 0.59);
+
+  @media(max-width: 768px) {
+    margin-bottom: 1rem;
+  }
+
+  .filter-block{
+    color: aliceblue;
+
+    &__item{
+      padding: 5px;
+      input{
+        margin-right: 1rem;
+      }
+    }
+  }
+}
+
+.event-container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+
+  &__item{
+    /* border-radius: 50%; */
+    background-color: #293039;
+    position: relative;
+    width: 33px;
+    border: 1px solid white;
+    height: 25px;
+    margin-left: 0.3rem;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    @media(max-width: 770px) {
+      width: 52px;
+      height: 31px;
+      margin-left: 0.5rem;
+    }
+
+    .mark{
+      background: none;
+      position: absolute;
+      right: -8px;
+      top: 5px;
+      color: aliceblue;
+    }
+  }
+}
+
+.btn{
+  border-radius: 0;
+}
+
+.btn-light, .btn-outline-light {
+
+  &:focus{
+    box-shadow: 1px 1px 7px 0 rgb(248 249 250 / 50%);
+  }
+}
+
+.selected-date{
+  display: flex;
+  margin-top: 1rem;
+  color: white;
+  align-items: baseline;
+}
+
+.add-event-btn {
+  position: absolute;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  right: 50px;
+  height: 20px;
+  font-size: 12px;
+  border-bottom-right-radius: 10px;
+  background: #00adff;
+  color: white !important;
+  transition: .3s ease;
+
+  &.show {
+    display: flex;
+  }
+
+  &:hover{
+    background: rgba(0, 255, 234, 0.79);
+  }
+}

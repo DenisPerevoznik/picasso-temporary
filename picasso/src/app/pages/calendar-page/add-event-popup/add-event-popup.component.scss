@@ -1,0 +1,58 @@
+
+.required {
+  vertical-align: super;
+  color: #ff6464;
+  font-size: 9px;
+}
+
+.error {
+  color: #ff6464;
+  font-size: 12px;
+}
+
+.add-metadata {
+  color: #28a745;
+  font-size: 15px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.remove-metadata {
+  color: #ff005d;
+  font-size: 15px;
+
+  &:hover {
+    cursor: pointer;
+    opacity: .8;
+  }
+}
+
+input, select {
+  box-shadow: -2px 1px 4px 0px rgb(0 0 0 / 59%);
+}
+
+.metadata-block {
+  padding: 10px;
+  font-size: 13px;
+  background: aliceblue;
+  border-radius: 2px;
+  box-shadow: -2px 1px 4px 0px rgb(0 0 0 / 59%);
+  max-height: 15rem;
+  overflow-y: auto;
+
+  .header{
+    color: #3c4955;
+  }
+
+  input {
+    font-size: 13px;
+    background: #313c46;
+    color: white;
+
+    &:focus{
+      background: #3c4955;
+    }
+  }
+}

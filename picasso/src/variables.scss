@@ -1,0 +1,31 @@
+
+//old:
+//$background-app: #161c30;
+//$header-height: 50px;
+//$second-color: #293046;
+//$inputs-color: #2b4b6d;
+//$footer-height: 120px;
+
+
+$background-app: #293039;
+$header-height: 50px;
+$second-color: #313C46;
+$inputs-color: #5f7385;
+$footer-height: 120px;
+
+@keyframes moving-gradient {
+  0% { background-position: -250px 0; }
+  100% { background-position: 250px 0; }
+}
+
+@mixin load-animation{
+  animation-duration: 1.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: moving-gradient;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #eeeeee38 8%, #dddddd6b 18%, #eeeeee38 33%);
+  background-size: 800px 104px;
+  position: relative;
+}

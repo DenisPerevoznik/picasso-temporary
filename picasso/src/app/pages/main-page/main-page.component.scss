@@ -1,0 +1,311 @@
+@import "src/variables";
+
+span{
+  color: white;
+}
+
+@mixin center-block{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wallet-name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: auto;
+}
+
+.network-item{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+  background: $second-color;
+  margin-right: 1rem;
+  border-radius: 17px;
+  min-width: 9rem;
+  border: 1px solid rgba(255, 255, 255, 0);
+  transition: 0.3s ease;
+
+  img{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+  }
+
+  &:hover{
+    cursor: pointer;
+    border: 1px solid #007bff;
+    background: #007bff4a;
+  }
+}
+
+.network-item_active{
+  background: #007bffb3;
+}
+
+.empty-transactions-block{
+  @include center-block;
+
+  span{
+    font-size: 17px;
+  }
+}
+
+.empty-icon-block{
+  @include center-block;
+  font-size: 5rem;
+  color: $inputs-color;
+}
+
+.loader-block{
+  @include center-block;
+}
+
+.no-wallets{
+  @include center-block;
+  flex-direction: column;
+  color: #a9a9a9b8;
+  font-size: 20px;
+  i{
+    font-size: 34px;
+  }
+}
+
+.table{
+  color: white;
+}
+
+.table th, table td{
+  white-space: nowrap;
+}
+
+th{
+  border-bottom: 1px solid #dee2e6;
+  border-top: none;
+}
+
+.save-wallet-card{
+  background: aliceblue;
+  color: #545454;
+  font-size: 19px;
+  padding: 5px 5px 5px 1rem;
+  border-radius: 10px;
+  border-top: 3px solid #00adff;
+  position: relative;
+  margin-bottom: 2rem;
+  transition: 0.5s ease;
+  height: 50px;
+  display: flex;
+  align-items: center;
+
+  span{
+    color: #545454;
+  }
+
+  i{
+    font-size: 20px;
+  }
+
+  &:hover{
+    cursor: pointer;
+    opacity: 0.8;
+  }
+
+  .times{
+    position: absolute;
+    top: 0;
+    right: 5px;
+  }
+}
+
+.wallet-card{
+  background-color: $inputs-color;
+  padding: 10px;
+  border-radius: 10px;
+  color: aliceblue;
+  height: 10rem;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: .5s ease;
+  box-shadow: 3px 2px 17px -4px black;
+  overflow-x: auto;
+
+  .table th, table td{
+    color: white;
+    padding: 5px;
+  }
+
+  .balance{
+    font-size: 13px;
+    color: #bdbdbd;
+  }
+
+  &-head{
+    display: flex;
+    flex-direction: row;
+  }
+
+  &:hover{
+    cursor: pointer;
+    //box-shadow: 3px 2px 17px -4px #00c2ff;
+    //box-shadow: 3px 2px 17px -4px #ffffff;
+  }
+}
+
+.table-view{
+  .table-hover{
+    tr{
+      &:hover{
+        color: #ffffff;
+        background-color: rgb(255 255 255 / 16%);
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.token-logo{
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center center;
+  //position: absolute;
+  //top: 7px;
+  //left: 7px;
+  //top: -16px;
+  //left: -5px;
+}
+
+.save-wallets-panel{
+  max-height: 17rem;
+  overflow-y: auto;
+  position: relative;
+
+  .overlay-wallets{
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    height: 100%;
+    z-index: 10;
+    background: #313c4682;
+  }
+}
+
+.wallet-panel{
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.trash-icon{
+  color: #e94242;
+  font-size: 17px;
+
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.transactions-modal{
+  background: $second-color;
+  color: white;
+
+  .close{
+    color: white;
+    text-shadow: none;
+  }
+
+  .modal-header{
+    align-items: center;
+  }
+
+  .transaction-helmet{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2rem;
+
+    .type-cell{
+      padding: 5px 16px;
+      border-radius: 10px;
+      background: #2ea0d7;
+      color: #ebebeb;
+      margin-right: 1rem;
+    }
+
+    .link-cell{
+      font-size: 20px;
+      margin-left: 1rem;
+
+      a{
+        color: white;
+        text-decoration: none;
+
+        a:visited{
+          color: white;
+        }
+      }
+
+      &:hover{
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .transaction-card{
+    //background-color: #1173a3;
+    background-color: #28506c;
+    padding: 10px;
+    border-radius: 10px;
+    color: aliceblue;
+    height: 10rem;
+    margin-top: .5rem;
+    display: flex;
+    flex-direction: column;
+    transition: .5s ease;
+    overflow-x: auto;
+
+    .label{
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .status-cell{
+      background: #283145;
+      border-radius: 7px;
+      padding: 1px 7px;
+    }
+
+    .value-cell{
+      //background: #283145;
+      border-radius: 7px;
+      padding: 3px 10px;
+    }
+  }
+}
+
+.change-view-block{
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .active{
+    background: #c9c9c9;
+    border-color: #c9c9c9;
+  }
+}
+
+.filter-block{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}

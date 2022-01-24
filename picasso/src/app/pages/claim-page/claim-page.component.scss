@@ -1,0 +1,126 @@
+@import "src/variables";
+
+.table{
+  color: white;
+  text-align: center;
+  background: #1e1e1e;
+}
+
+tr{
+  &:hover{
+    background: #ffffff4d;
+  }
+}
+
+.table th, table td{
+  white-space: nowrap;
+}
+
+th{
+  border: none;
+}
+
+td{
+  border-color: #dee2e63b;
+}
+
+input, select {
+  box-shadow: -2px 1px 4px 0px rgb(0 0 0 / 59%);
+}
+
+.edit-date-map {
+  color: #4cabff;
+  font-size: 15px;
+  transition: .3s ease;
+
+  &:hover {
+    cursor: pointer;
+    font-size: 17px;
+    color: black;
+  }
+}
+
+.remove-date-map {
+  color: #ff0026;
+  font-size: 15px;
+  transition: .3s ease;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.table-loader{
+  td{
+    .load-line{
+      margin: 10px;
+      width: 90%;
+      height: 20px;
+      @include load-animation;
+    }
+
+    .load-circle{
+      margin: 10px auto;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      @include load-animation;
+    }
+  }
+}
+
+.chain-img{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+
+.table-container{
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+.date-map-block {
+  padding: 10px;
+  font-size: 13px;
+  background: aliceblue;
+  border-radius: 2px;
+  box-shadow: -2px 1px 4px 0px rgb(0 0 0 / 59%);
+  max-height: 15rem;
+  overflow-y: auto;
+
+  .header{
+    color: #3c4955;
+  }
+
+  input {
+    font-size: 13px;
+    background: #313c46;
+    color: white;
+
+    &:focus{
+      background: #3c4955;
+    }
+  }
+}
+
+.required {
+  vertical-align: super;
+  color: #ff6464;
+  font-size: 9px;
+}
+
+.error {
+  color: #ff6464;
+  font-size: 12px;
+}
+
+.add-date-map-item {
+  color: #28a745;
+  font-size: 15px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

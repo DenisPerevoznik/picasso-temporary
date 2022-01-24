@@ -1,0 +1,302 @@
+<div class="container">
+  <form [formGroup]="walletForm" (ngSubmit)="walletAddressSubmit()">
+  <div class="row mt-4">
+    <div class="col-12 mb-2 d-flex flex-row flex-wrap">
+      <div class="network-item mb-2" *ngFor="let net of networks" [ngClass]="{'network-item_active': net === selectedNetwork}"
+           (click)="onNetworkChange(net)">
+        <img class="mr-2" [src]="net | networkInfo:'logo'"
+             loading="lazy" alt="logo">
+        <span>{{net | networkInfo:'name'}}</span>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-4 d-flex align-items-center">
+      <input type="checkbox" [ngModelOptions]="{standalone: true}"
+             [(ngModel)]="filterState.status" class="mr-3" (ngModelChange)="filterStateChange()">
+      <span class="mr-2">Скрывать если баланс меньше чем:</span>
+    </div>
+    <div class="col-sm-12 col-md-8 d-flex">
+      <input type="number" [disabled]="!filterState.status" step=".0001" (change)="filterStateChange()"
+             [ngModelOptions]="{standalone: true}" class="form-control mr-2" style="width: 12rem;"
+             [(ngModel)]="filterState.value">
+    </div>
+<!--    <div class="col-sm-12 col-md-8">-->
+<!--      <div class="filter-block">-->
+<!--        <span class="mr-2">Скрывать если баланс меньше чем </span>-->
+<!--        <div class="filter-block__panel">-->
+<!--          <input type="checkbox" [ngModelOptions]="{standalone: true}"-->
+<!--                 [(ngModel)]="filterState.status" class="mr-3" (ngModelChange)="filterStateChange()">-->
+<!--          <input type="number" [disabled]="!filterState.status" step=".0001" (change)="filterStateChange()"-->
+<!--                 [ngModelOptions]="{standalone: true}" class="form-control mr-2" style="width: 10rem;"-->
+<!--                 [(ngModel)]="filterState.value">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+    <div class="col-12 mt-2">
+      <div class="custom-card">
+        <span>Адрес кошелька</span>
+
+          <div class="row">
+            <div class="col-sm-12 col-lg-9 col-md-8">
+              <input type="text" placeholder="Введите сюда адрес кошелька" class="form-control" formControlName="address">
+              <small class="invalid" *ngIf="walletForm.invalid && submitted">Введите адрес кошелька</small>
+            </div>
+            <div class="col-sm-12 col-lg-3 col-md-4">
+              <button type="submit" class="btn btn-light" [disabled]="loader" style="width: 100%">
+                <i class="bi bi-search"></i> Поиск данных</button>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  </form>
+    <div class="row">
+    <div class="col-12 mt-4">
+      <div class="custom-card">
+        <h5 class="m-3">Сохраненные кошельки</h5>
+        <div *ngIf="!savedWallets.length" class="no-wallets">
+          <i class="bi bi-card-list"></i>
+          <small>Список пуст</small>
+        </div>
+
+        <div class="row save-wallets-panel">
+          <div *ngIf="loader" class="overlay-wallets"></div>
+          <div class="col-md-3 col-sm-12" *ngFor="let wall of savedWallets">
+            <div class="save-wallet-card" (click)="walletAddressSubmit(wall.address)" [title]="wall.name">
+              <span class="times" (click)="removeSavedWallet($event, wall)">&times;</span>
+              <i class="bi bi-wallet"></i> <span class="ml-2 mr-2 wallet-name">{{wall.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mt-3">
+      <div class="change-view-block">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-light" (click)="changeView('list')"
+                  [ngClass]="{'active': viewMode === 'list'}">
+            <i class="bi bi-view-list mr-1"></i> Список
+          </button>
+          <button type="button" class="btn btn-light" (click)="changeView('table')"
+                  [ngClass]="{'active': viewMode === 'table'}">
+            <i class="bi bi-card-list mr-1"></i> Таблица
+          </button>
+        </div>
+
+        <button [disabled]="!currentWallet.address" class="ml-4 btn btn-outline-light"
+                (click)="walletAddressSubmit(currentWallet.address)">
+          <i class="bi bi-arrow-clockwise mr-2"></i> Обновить
+        </button>
+      </div>
+    </div>
+
+    <div class="col-12 mt-2" id="loadedContent">
+      <div class="custom-card wallet-panel">
+
+        <div *ngIf="!tokens.length && !loader" class="empty-icon-block">
+          <i class="bi bi-wallet2"></i>
+        </div>
+
+        <div class="loader-block" *ngIf="loader">
+          <app-loader></app-loader>
+        </div>
+
+        <div class="row">
+          <div class="col-12" *ngIf="tokens.length && !loader">
+
+            <div style="width: 100%" class="d-flex justify-content-center align-items-center mb-3">
+              <button type="button" (click)="saveWallet()" *ngIf="!walletAlreadySaved"
+                      class="btn btn-success">
+                <i class="bi bi-save"></i> Сохранить этот кошелек</button>
+            </div>
+
+            <div *ngIf="walletAlreadySaved">
+              <span *ngIf="currentWallet.name">Загруженый кошелек: {{this.currentWallet.name}}</span>
+              <div>
+                <span><i class="bi bi-check"></i>Cохранен</span>
+<!--                <i class="bi bi-trash ml-3 trash-icon" (click)="removeWallet()"></i>-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!loader && tokens.length">
+          <ng-container *ngIf="viewMode === 'table'; else listView">
+            <div class="col-12 table-view">
+
+              <div class="d-flex flex-row align-items-center justify-content-end">
+                <span class="mr-2">Сортировка по столбцу</span>
+                <select class="form-control" style="width: 14rem" [(ngModel)]="sortField">
+                  <option value="none">Без сортировки</option>
+                  <option value="24h">24 часа</option>
+                  <option value="7d">7 дней</option>
+                </select>
+              </div>
+
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Название</th>
+                  <th scope="col" (click)="changeFilterMode('24h')">
+                    <i [class]="'mr-2 bi bi-sort-numeric-' + filterMode" *ngIf="sortField === '24h'"></i> 24 часа
+                  </th>
+                  <th scope="col" (click)="changeFilterMode('7d')">
+                    <i [class]="'mr-2 bi bi-sort-numeric-' + filterMode" *ngIf="sortField === '7d'"></i> 7 дней
+                  </th>
+                  <th scope="col">Цена</th>
+                  <th scope="col">Баланс</th>
+                  <th scope="col">Сумма</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let token of
+                (tokens | filterTokens:filterState.value:filterState.status) | sortTokens:sortField:filterMode"
+                    (click)="openToken(transactionsModal, token)">
+                  <td>
+                    <div class="token-logo" [style]="'background-image: url('+token.logoUrl+')'"></div>
+                  </td>
+                  <td>
+                    {{token.name}}
+                  </td>
+                  <td>
+                    <app-percent-value [value]="token.pricePercentage24h"></app-percent-value>
+                  </td>
+                  <td>
+                    <app-percent-value [value]="token.pricePercentage7d"></app-percent-value>
+                  </td>
+                  <td>
+                    ${{token.currentPrice}}
+                  </td>
+                  <td>
+                    {{token.balance}} {{token.symbol}}
+                  </td>
+                  <td>
+                    ${{token.sum}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+
+          <ng-template #listView>
+            <div class="col-md-6 col-sm-12" *ngFor="let token of tokens | filterTokens:filterState.value:filterState.status"
+                 (click)="openToken(transactionsModal, token)">
+              <div class="wallet-card">
+                <div class="wallet-card-head">
+                  <div class="token-logo" [style]="'background-image: url('+token.logoUrl+')'"></div>
+                  <span class="ml-2">{{token.name}}<br><span class="balance">Баланс: {{token.balance}} {{token.symbol}}</span></span>
+                </div>
+                <div class="wallet-card-body">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">Цена</th>
+                      <th scope="col">Сумма</th>
+                      <th scope="col">24 часа</th>
+                      <th scope="col">7 дней</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        ${{token.currentPrice}}
+                      </td>
+                      <td>
+                        ${{token.sum}}
+                      </td>
+                      <td>
+                        <app-percent-value [value]="token.pricePercentage24h"></app-percent-value>
+                      </td>
+
+                      <td>
+                        <app-percent-value [value]="token.pricePercentage7d"></app-percent-value>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #transactionsModal let-modal>
+  <div class="transactions-modal">
+    <div class="modal-header">
+      <img [src]="selectedToken.logoUrl" width="40" class="mr-2" style="border-radius: 50%">
+      <h5 class="modal-title">{{selectedToken.name}} ({{selectedToken.symbol}})</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="loader-block" *ngIf="modalLoader; else modalContent">
+        <app-loader></app-loader>
+      </div>
+      <ng-template #modalContent>
+        <div class="col-12 d-flex flex-row align-items-center" *ngIf="selectedToken.contractAddress">
+<!--          <span>Адрес токена: {{selectedToken.contractAddress}}</span>-->
+          <button class="btn btn-sm btn-outline-light mb-3" (click)="copyContractAddress($event)">
+            <i class="bi bi-clipboard mr-2"></i> Скопировать адрес токена
+          </button>
+        </div>
+        <div class="col-12">
+          <h5>Список транзакций</h5>
+        </div>
+        <div class="empty-transactions-block"
+             *ngIf="!modalLoader && !selectedToken.transactions?.length">
+          <span>Список пуст</span>
+        </div>
+        <div class="col-12" *ngFor="let trs of selectedToken.transactions">
+          <div class="transaction-helmet">
+            <div class="type-cell">
+              {{trs.type}}
+            </div>
+            <span>{{trs.date | date:'dd.MM.YYYY HH:mm:ss'}}</span>
+            <span class="link-cell">
+              <a target="_blank" [href]="(walletForm.value.network | networkInfo:'scan') + '/' + trs.id">
+                <i class="bi bi-box-arrow-up-right"></i>
+              </a>
+            </span>
+          </div>
+          <div class="transaction-card">
+            <div>
+              <span class="label mr-2">Статус:</span>
+              <span class="status-cell" [ngStyle]="{color: trs.status === 'completed' ? '#7bef72' : '#ff983e'}">
+                {{trs.status}} <i class="ml-1 bi bi-broadcast"></i>
+              </span>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12 col-md-6">
+                <span class="label">From: </span>
+                <span class="value-cell">{{trs.from}}</span>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <span class="label">To: </span>
+                <span class="value-cell">{{trs.to}}</span>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12 col-md-6">
+                <span class="label">Операция: </span>
+                <span class="value-cell">{{trs.description}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Закрыть</button>
+    </div>
+  </div>
+</ng-template>

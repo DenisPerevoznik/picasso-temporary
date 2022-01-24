@@ -1,0 +1,36 @@
+
+
+.login-form-container {
+  padding: 15px;
+  width: 23rem;
+  background: linear-gradient(45deg, #bdbdbd, aliceblue);
+  box-shadow: -2px 1px 4px #00000096;
+  border-radius: 2px;
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+  }
+
+  .footer{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+
+  .error {
+    font-size: 13px;
+    color: red;
+  }
+
+  input {
+    box-shadow: -2px 1px 4px #00000096;
+    background: #313c46;
+
+    &:focus {
+      background: #3c4955;
+    }
+  }
+}

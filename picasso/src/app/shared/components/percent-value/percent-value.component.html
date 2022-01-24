@@ -1,0 +1,9 @@
+<div [ngStyle]="{color: value < 0 ? '#ff5151' : '#6bff51'}" *ngIf="value; else none">
+  <span class="chip">
+    <i [class]="'mr-2 bi bi-graph-' + (value < 0 ? 'down' : 'up')"></i> {{ value }}%
+  </span>
+</div>
+
+<ng-template #none>
+  <span>--</span>
+</ng-template>

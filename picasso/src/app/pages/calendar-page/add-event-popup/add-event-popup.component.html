@@ -1,0 +1,73 @@
+<div class="modal-main">
+  <form [formGroup]="newEventForm" (ngSubmit)="createEventSubmit()">
+    <div class="modal-header">
+      <h5 class="modal-title" *ngIf="!isEdit">Новое событие {{selectedDay.dateString || ''}}</h5>
+      <h5 class="modal-title" *ngIf="isEdit">Редактирование {{editingEvent ? editingEvent.title : ''}}</h5>
+    </div>
+    <div class="modal-body">
+      <label>Название <i class="bi bi-asterisk required"></i></label>
+      <input type="text" class="form-control mb-3" formControlName="title" placeholder="Name"/>
+
+      <label>Название токена <i class="bi bi-asterisk required"></i></label>
+      <input type="text" class="form-control mb-3" formControlName="tokenName" placeholder="Token name"/>
+
+      <label>Иконка</label>
+      <select formControlName="icon" class="form-control mb-3">
+        <option [ngValue]="platformIcons.Picasso">Picasso</option>
+        <option [value]="platformIcons.GameFi">GameFi</option>
+        <option [value]="platformIcons.RedKite">Red Kite</option>
+        <option [value]="platformIcons.PoolzFinance">Poolz Finance</option>
+        <option [value]="platformIcons.NFTPad">NFT Pad</option>
+        <option [value]="platformIcons.SeedifyFund">Seedify Fund</option>
+        <option [value]="platformIcons.TrustPad">Trast Pad</option>
+        <option [value]="platformIcons.LZ">LZ</option>
+        <option [value]="platformIcons.Truepnl">Truepnl</option>
+        <option [value]="platformIcons.KrystalGo">KrystalGO</option>
+        <option [value]="platformIcons.BscLaunch">Bsc Launch</option>
+        <option [value]="platformIcons.BscStation">Bsc Station</option>
+      </select>
+
+      <label>Ссылка на изображение баннера</label>
+      <input type="url" class="form-control mb-3" formControlName="banner" placeholder="Banner URL"/>
+
+      <label>Ссылка на страницу</label>
+      <input type="url" class="form-control mb-3" formControlName="link" placeholder="Website URL"/>
+
+      <div formArrayName="metadata" class="metadata-block">
+        <h6 class="header">Дополнительные данные</h6>
+        <div class="form-group" *ngFor="let metadataFormGroupItem of formGroupsMetadata; let i = index">
+          <div [formGroup]="metadataFormGroupItem">
+            <div class="row mb-3">
+              <div class="col-5">
+                <input type="text" class="form-control" placeholder="Название" aria-label="Название" formControlName="title">
+              </div>
+              <div class="col-6">
+                <input type="text" class="form-control" placeholder="Значение" aria-label="Значение" formControlName="value">
+              </div>
+              <div class="col-1 d-flex align-items-center" style="padding: 0">
+                <i class="bi bi-trash remove-metadata"
+                   (click)="removeMetadataItem(i)"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="add-metadata" (click)="newEventAddMetadataField()">
+          <i class="bi bi-plus-circle"></i> Добавить
+        </div>
+      </div>
+      <span *ngIf="submitted && newEventForm.invalid" class="error mt-3">Нужно заполнить обязательные поля</span>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-sm btn-light" [disabled]="loader">
+        <ng-container *ngIf="!loader">
+          <i class="bi bi-clipboard-check mr-2"></i> {{isEdit ? 'Сохранить' : 'Создать'}}
+        </ng-container>
+        <div class="spinner-border spinner-border-sm" role="status" *ngIf="loader">
+          <span class="visually-hidden"></span>
+        </div>
+      </button>
+      <button type="button" class="btn btn-sm btn-dark" (click)="modal.close('Close click')" [disabled]="loader">Отмена</button>
+    </div>
+  </form>
+</div>
